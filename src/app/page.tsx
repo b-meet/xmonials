@@ -190,15 +190,16 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
         <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
           <div className="flex justify-center space-x-6 md:order-2">
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">Follow us on X</p>
+            <Link href="/privacy" className="text-sm text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="text-sm text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Terms of Service</Link>
+            <a href="https://twitter.com/xmonials" className="text-sm text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors">Follow us on X</a>
           </div>
           <div className="mt-8 md:order-1 md:mt-0">
             <p className="text-center text-xs leading-5 text-neutral-500 dark:text-neutral-400">
-              &copy; 2026 Xmonials, Inc. All rights reserved.
+              &copy; {new Date().getFullYear()} Xmonials, Inc. All rights reserved.
             </p>
           </div>
         </div>

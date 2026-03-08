@@ -1,7 +1,8 @@
--- Create profiles table
+-- Create profiles table linked to Supabase Auth
 create table public.profiles (
-  id uuid primary key default gen_random_uuid(),
-  twitter_handle text not null unique,
+  id uuid references auth.users(id) on delete cascade not null primary key,
+  twitter_handle text,
+  subscription_tier text default 'free' not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
@@ -10,7 +11,26 @@ alter table public.profiles enable row level security;
 
 -- Allow read access to all users
 create policy "Allow public read access on profiles" on public.profiles for select using (true);
--- Usually, only authenticated users can insert/update their own profile. For simplicity and backend syncing, service role bypasses RLS.
+
+-- Allow authenticated users to view their own profile
+create policy "Allow users to view their own profile" on public.profiles for select using (auth.uid() = id);
+
+-- Allow authenticated users to update their own profile
+create policy "Allow users to update own profile" on public.profiles for update using (auth.uid() = id);
+
+-- Try to create a trigger to auto-create profile on signup
+create function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, twitter_handle, subscription_tier)
+  values (new.id, new.raw_user_meta_data->>'preferred_username', 'free');
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 
 -- Create mentions table
 create table public.mentions (

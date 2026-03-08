@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: Request, { params }: { params: Promise<{ profile_id: string }> }) {
   try {
     const { profile_id } = await params;
+
+    const supabase = await createClient();
 
     // Fetch approved mentions for this profile
     const { data: mentions, error } = await supabase

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
     try {
@@ -10,11 +10,37 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
         }
 
-        // Update the mention using the service role to bypass RLS since we aren't enforcing strict user auth here
-        const { data, error } = await supabaseAdmin
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        // Logic for limits
+        if (is_approved) {
+            // Check subscription tier
+            const { data: profile } = await supabase.from('profiles').select('subscription_tier').eq('id', user.id).single();
+
+            if (profile?.subscription_tier === 'free') {
+                // Check current approved count
+                const { count, error: countError } = await supabase
+                    .from('mentions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('profile_id', user.id)
+                    .eq('is_approved', true);
+
+                if (!countError && count !== null && count >= 5) {
+                    return NextResponse.json({ error: 'Free tier limit reached. Please upgrade to Pro to approve more than 5 testimonials.' }, { status: 403 });
+                }
+            }
+        }
+
+        const { data, error } = await supabase
             .from('mentions')
             .update({ is_approved })
             .eq('id', id)
+            .eq('profile_id', user.id) // Security check to ensure they own the mention
             .select()
             .single();
 

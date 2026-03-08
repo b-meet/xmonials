@@ -1,7 +1,12 @@
 import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
+import { createClient } from '@/lib/supabase/server';
 
-export default function Navbar() {
+export default async function Navbar() {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    const user = data?.user;
+
     return (
         <header className="sticky top-0 z-50 w-full border-b border-neutral-200/50 bg-white/70 backdrop-blur-xl dark:border-neutral-800/50 dark:bg-neutral-950/70 transition-colors duration-300">
             <div className="container mx-auto flex h-16 sm:h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -18,20 +23,29 @@ export default function Navbar() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-4 sm:gap-6">
-                    <Link
-                        href="/dashboard"
-                        className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors"
-                    >
-                        Dashboard
-                    </Link>
+                    {user && (
+                        <Link
+                            href="/dashboard"
+                            className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors"
+                        >
+                            Dashboard
+                        </Link>
+                    )}
                     <div className="h-5 w-px bg-neutral-200 dark:bg-neutral-800 hidden sm:block"></div>
                     <ThemeToggle />
-                    <Link
-                        href="/dashboard"
-                        className="hidden sm:flex h-9 items-center justify-center rounded-lg bg-neutral-900 px-4 text-sm font-medium text-white shadow transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
-                    >
-                        Get Started
-                    </Link>
+
+                    {user ? (
+                        <div className="hidden sm:flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 text-xs font-bold text-white shadow-sm ring-2 ring-white dark:ring-neutral-900">
+                            {user.user_metadata?.name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
+                        </div>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="hidden sm:flex h-9 items-center justify-center rounded-lg bg-neutral-900 px-4 text-sm font-medium text-white shadow transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                        >
+                            Sign up
+                        </Link>
+                    )}
                 </div>
             </div>
         </header>

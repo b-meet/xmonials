@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase/server';
 import { fetchUserMentions } from '@/lib/twitter';
 
 // Optional: run as Edge function if supported by Supabase client

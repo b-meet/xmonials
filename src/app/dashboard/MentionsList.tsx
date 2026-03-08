@@ -20,15 +20,18 @@ export default function MentionsList({ initialMentions }: { initialMentions: Men
             });
 
             if (!res.ok) {
-                throw new Error('Failed to update status');
+                const data = await res.json().catch(() => null);
+                throw new Error(data?.error || 'Failed to update status');
             }
-        } catch (err) {
+        } catch (err: unknown) {
             // Revert on error
             console.error(err);
             setMentions(current =>
                 current.map(m => m.id === id ? { ...m, is_approved: !newStatus } : m)
             );
-            alert('Failed to update mention approval status.');
+
+            const message = err instanceof Error ? err.message : 'Failed to update mention approval status.';
+            alert(message);
         }
     };
 

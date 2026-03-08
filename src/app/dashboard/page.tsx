@@ -1,15 +1,24 @@
-import { supabaseAdmin } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import MentionsList from './MentionsList';
 import { Mention } from '@/components/MentionItem';
 import Navbar from '@/components/Navbar';
+import { redirect } from 'next/navigation';
 
 export const revalidate = 0; // Disable static caching for this page
 
 export default async function DashboardPage() {
-    // For MVP, we fetch all mentions. In reality, you'd filter by the logged-in user's profile_id
-    const { data: mentions, error } = await supabaseAdmin
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        redirect('/login');
+    }
+
+    // Only fetch mentions belonging to the logged in user
+    const { data: mentions, error } = await supabase
         .from('mentions')
         .select('*')
+        .eq('profile_id', user.id)
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -36,6 +45,12 @@ export default async function DashboardPage() {
                         <p className="mt-2 text-lg text-neutral-500 dark:text-neutral-400">
                             Curate the best tweets about your product and turn them into powerful testimonials.
                         </p>
+                        <div className="mt-6">
+                            <a href="/dashboard/builder" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                                Configure Widget
+                            </a>
+                        </div>
                     </div>
                     <div className="flex gap-4">
                         <div className="flex flex-col rounded-xl border border-neutral-200 bg-white px-4 py-3 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
