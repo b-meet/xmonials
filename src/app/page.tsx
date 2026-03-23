@@ -34,7 +34,7 @@ export default function Home() {
               </Link>
               <p className="text-sm font-medium text-neutral-500 flex items-center gap-1 mt-2">
                 <span className="flex h-2 w-2 rounded-full bg-[#FFE55C] dark:bg-blue-400"></span>
-                It&apos;s 100% free. Really.
+                Plans start at just $5/mo.
               </p>
             </div>
 
@@ -223,16 +223,17 @@ export default function Home() {
         </section>
 
         {/* --- BOTTOM CTA --- */}
-        <section className="py-24 sm:py-32 bg-[#FFE55C] dark:bg-blue-600 text-neutral-900 dark:text-white text-center px-6">
+        <section className="py-24 sm:py-32 bg-neutral-950 text-white text-center px-6 border-t border-neutral-800">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-5xl font-black tracking-tight mb-8">
-              Ready to ship features users (really) want?
+            <h2 className="text-5xl md:text-6xl font-black tracking-tight mb-8 leading-[1.1]">
+              Ready to turn <br className="hidden md:block" />
+              <span className="text-[#FFE55C]">𝕏 mentions</span> into revenue?
             </h2>
             <Link
-              href="/dashboard"
-              className="inline-flex items-center justify-center rounded-full bg-neutral-900 dark:bg-white px-10 py-5 text-xl font-bold text-white dark:text-neutral-900 transition-all hover:scale-105 shadow-xl"
+              href="/#pricing"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FFE55C] px-10 py-5 text-xl font-bold text-neutral-900 transition-all hover:scale-105 hover:bg-[#ffed82] shadow-xl"
             >
-              Start collecting for free
+              Get started for $5
             </Link>
           </div>
         </section>
