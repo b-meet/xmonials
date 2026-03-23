@@ -34,7 +34,7 @@ export default function Home() {
               </Link>
               <p className="text-sm font-medium text-neutral-500 flex items-center gap-1 mt-2">
                 <span className="flex h-2 w-2 rounded-full bg-[#FFE55C] dark:bg-blue-400"></span>
-                Plans start at just $5/mo.
+                Set up your widget in under 2 minutes.
               </p>
             </div>
 
@@ -233,7 +233,7 @@ export default function Home() {
               href="/#pricing"
               className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FFE55C] px-10 py-5 text-xl font-bold text-neutral-900 transition-all hover:scale-105 hover:bg-[#ffed82] shadow-xl"
             >
-              Get started for $5
+              Start collecting testimonials
             </Link>
           </div>
         </section>
